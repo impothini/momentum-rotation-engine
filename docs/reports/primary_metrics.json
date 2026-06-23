@@ -1,0 +1,38 @@
+{
+  "momentum_v1": {
+    "label": "Momentum v1",
+    "cagr": 0.053416567598056686,
+    "max_drawdown": -0.2533574614475899,
+    "annualized_vol": 0.12592839448539678,
+    "sharpe": 0.47747883021698667,
+    "sortino": 0.6040500154520094,
+    "full_corr_voo": 0.48956282798775624,
+    "tail_corr_voo": 0.2256084834162647,
+    "avg_ret_on_voo_worst5pct_days": -0.009528968602022344,
+    "avg_voo_ret_on_worst5pct_days": -0.025483036250751486
+  },
+  "static_equal_weight": {
+    "label": "Static Equal Weight",
+    "cagr": 0.06525056774138793,
+    "max_drawdown": -0.242087437236915,
+    "annualized_vol": 0.11783063474349638,
+    "sharpe": 0.5969936059589747,
+    "sortino": 0.7690131936465541,
+    "full_corr_voo": 0.8873936932851298,
+    "tail_corr_voo": 0.8633748640413977,
+    "avg_ret_on_voo_worst5pct_days": -0.015435396412863853,
+    "avg_voo_ret_on_worst5pct_days": -0.025483036250751486
+  },
+  "static_inverse_vol": {
+    "label": "Static Inverse Vol",
+    "cagr": 0.05995909999948945,
+    "max_drawdown": -0.23897082821305746,
+    "annualized_vol": 0.10919893893786291,
+    "sharpe": 0.5894554550830116,
+    "sortino": 0.756815226015626,
+    "full_corr_voo": 0.8620947852280132,
+    "tail_corr_voo": 0.8285778304901946,
+    "avg_ret_on_voo_worst5pct_days": -0.013837024416528898,
+    "avg_voo_ret_on_worst5pct_days": -0.025483036250751486
+  }
+}

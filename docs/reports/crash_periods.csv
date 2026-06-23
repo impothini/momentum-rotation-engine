@@ -1,0 +1,10 @@
+period,strategy,total_return,max_drawdown,corr_voo
+2018 Q4 (Fed tightening),Momentum v1,-0.135979,-0.136829,0.6081
+2018 Q4 (Fed tightening),Static Equal Weight,-0.100094,-0.128224,0.9361
+2018 Q4 (Fed tightening),Static Inverse Vol,-0.077214,-0.100205,0.9019
+2020 COVID crash,Momentum v1,-0.151936,-0.159376,0.4725
+2020 COVID crash,Static Equal Weight,-0.235124,-0.242087,0.9347
+2020 COVID crash,Static Inverse Vol,-0.227405,-0.238971,0.9115
+2022 Rate Shock,Momentum v1,-0.139255,-0.213636,0.3908
+2022 Rate Shock,Static Equal Weight,-0.149159,-0.204242,0.8999
+2022 Rate Shock,Static Inverse Vol,-0.145724,-0.207335,0.862
