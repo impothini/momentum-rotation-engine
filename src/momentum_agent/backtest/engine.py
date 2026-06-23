@@ -817,7 +817,11 @@ class BacktestEngine:
         raw_opens: dict[str, Optional[float]],
         rebalance_id: str,
     ) -> None:
-        """Liquidate all positions and move to SGOV."""
+        """Liquidate all positions and move to SGOV.
+
+        Emits REBALANCE fill events for every order so the audit log is complete
+        and the reporting position tracker has a full record.
+        """
         current = self.broker.get_positions()
 
         # Liquidate everything except SGOV
@@ -825,17 +829,40 @@ class BacktestEngine:
             if ticker == "SGOV":
                 continue
             open_price = raw_opens.get(ticker)
-            if open_price and open_price > 0:
-                order = Order(
+            if not open_price or open_price <= 0:
+                self._emit(Event(
+                    date=execution_date,
+                    event_type=EventType.DATA_INTEGRITY_FAILURE,
                     ticker=ticker,
-                    quantity=-shares,
-                    order_type="market",
-                    order_date=execution_date,
-                    notes="kill_switch_liquidation",
-                )
-                fill = self.broker.submit_order(order, open_price)
-                if not fill.is_rejected:
-                    self._portfolio.reduce_position(ticker, abs(fill.filled_quantity))
+                    reason="missing_open_for_kill_switch_liquidation",
+                ))
+                continue
+            order = Order(
+                ticker=ticker,
+                quantity=-shares,
+                order_type="market",
+                order_date=execution_date,
+                notes="kill_switch_liquidation",
+            )
+            fill = self.broker.submit_order(order, open_price)
+            if not fill.is_rejected:
+                self._portfolio.reduce_position(ticker, abs(fill.filled_quantity))
+            family = TICKER_TO_FAMILY.get(ticker, "UNKNOWN")
+            self._emit(Event(
+                date=execution_date,
+                event_type=EventType.REBALANCE,
+                ticker=ticker,
+                asset_family=family,
+                execution_open_price=open_price,
+                fill_price=fill.fill_price,
+                order_quantity=order.quantity,
+                filled_quantity=fill.filled_quantity,
+                target_weight=0.0,
+                target_shares=0.0,
+                actual_shares=self._portfolio.position_shares(ticker),
+                cash=self.broker.get_cash(),
+                reason=rebalance_id,
+            ))
 
         # Buy SGOV with remaining cash
         self._portfolio.cash = self.broker.get_cash()
@@ -855,6 +882,21 @@ class BacktestEngine:
                     "SGOV", fill.filled_quantity, fill.fill_price,
                     execution_date, rebalance_id, "CASH",
                 )
+            self._emit(Event(
+                date=execution_date,
+                event_type=EventType.REBALANCE,
+                ticker="SGOV",
+                asset_family="CASH",
+                execution_open_price=sgov_price,
+                fill_price=fill.fill_price,
+                order_quantity=order.quantity,
+                filled_quantity=fill.filled_quantity,
+                target_weight=1.0,
+                target_shares=sgov_shares,
+                actual_shares=self._portfolio.position_shares("SGOV"),
+                cash=self.broker.get_cash(),
+                reason=rebalance_id,
+            ))
 
         self._portfolio.cash = self.broker.get_cash()
 
