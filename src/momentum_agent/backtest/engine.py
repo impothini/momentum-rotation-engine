@@ -114,7 +114,7 @@ def _generate_orders(
 ) -> list[Order]:
     """Generate buy/sell market orders to move from current to target shares."""
     orders: list[Order] = []
-    all_tickers = set(target_shares) | set(current_shares)
+    all_tickers = sorted(set(target_shares) | set(current_shares))
     for ticker in all_tickers:
         target = target_shares.get(ticker, 0.0)
         current = current_shares.get(ticker, 0.0)
@@ -572,7 +572,7 @@ class BacktestEngine:
         the monthly rebalance schedule.  Tickers that are fully sold are removed
         from _pending_exits; partial fills leave the ticker for future attempts.
         """
-        for ticker in list(self._pending_exits):
+        for ticker in sorted(self._pending_exits):
             shares = self._portfolio.position_shares(ticker)
             if shares <= 1e-9:
                 self._pending_exits.discard(ticker)
@@ -821,7 +821,7 @@ class BacktestEngine:
         current = self.broker.get_positions()
 
         # Liquidate everything except SGOV
-        for ticker, shares in current.items():
+        for ticker, shares in sorted(current.items()):
             if ticker == "SGOV":
                 continue
             open_price = raw_opens.get(ticker)

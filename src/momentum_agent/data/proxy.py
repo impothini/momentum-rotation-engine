@@ -29,6 +29,11 @@ ASSET_INCEPTION_DATES: dict[str, date] = {
     "VOO": date(2010, 9, 9),
     "VTI": date(2001, 5, 31),
     "AGG": date(2003, 9, 29),
+    # Proxies (own inception — needed so the proxy itself can be validated)
+    "EFA": date(2001, 8, 27),
+    "SPY": date(1993, 1, 29),
+    "BIL": date(2007, 5, 25),
+    "VIG": date(2006, 4, 27),
 }
 
 # ---------------------------------------------------------------------------
@@ -41,10 +46,15 @@ ASSET_INCEPTION_DATES: dict[str, date] = {
 DEFAULT_PROXY_MAP: dict[str, str] = {
     # SGOV (inception 2020-05-26) → use BIL as the nearest T-bill ETF proxy.
     # BIL launched 2007-05-25, so it covers backtests back to at least 2007.
-    # For history before BIL, use ^IRX (13-week T-bill rate) converted to a price series.
     "SGOV": "BIL",
     # SCHD (inception 2011-10-20) → use VIG as dividend-quality proxy.
     "SCHD": "VIG",
+    # VEA (inception 2007-07-26) → use EFA (MSCI EAFE, same index, inception 2001).
+    "VEA": "EFA",
+    # VOO (inception 2010-09-09) → use SPY (same S&P 500 index, inception 1993).
+    # VOO is a benchmark-only ticker; this proxy lets benchmark NAV be tracked
+    # through the full backtest window.
+    "VOO": "SPY",
     # DBC (inception 2006-02-03) → no liquid proxy for 2005 and earlier.
     # Leave unmapped; engine will refuse backtests before DBC inception
     # unless the caller provides a proxy.

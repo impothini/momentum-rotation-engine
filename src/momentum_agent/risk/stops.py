@@ -18,7 +18,6 @@ Stop / Rebalance Collision:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
 from typing import Optional
 
 from momentum_agent.config import RiskParams
@@ -84,7 +83,7 @@ class StopLossEvaluator:
     ) -> list[StopCheckResult]:
         """Evaluate stops for all held positions."""
         results = []
-        for ticker, position in positions.items():
+        for ticker, position in sorted(positions.items()):
             raw_close = raw_closes.get(ticker)
             results.append(self.check_position(position, raw_close))
         return results
