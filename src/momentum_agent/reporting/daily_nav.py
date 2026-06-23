@@ -32,7 +32,7 @@ class DailyNavRow:
     date: date
     nav: Optional[float]
     cash: float
-    positions_value: float
+    positions_value: Optional[float]
     high_water_mark: Optional[float]
     drawdown_pct: Optional[float]
     strategy_state: str

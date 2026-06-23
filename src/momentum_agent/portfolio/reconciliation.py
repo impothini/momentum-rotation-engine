@@ -13,8 +13,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Optional
-
 from momentum_agent.config import ReconciliationParams
 from momentum_agent.events import Event, EventType
 
@@ -43,7 +41,6 @@ class Reconciler:
         actual_shares: dict[str, float],        # ticker → broker-reported shares
         target_cash: float,
         actual_cash: float,
-        nav: Optional[float],
         recon_date: date,
         strategy_version: str = "1.0.0",
     ) -> ReconciliationResult:
@@ -71,21 +68,6 @@ class Reconciler:
                     f"{ticker}: share_diff={actual - target:.6f} "
                     f"(tolerance={self.params.share_tolerance})"
                 )
-
-            if nav and nav > 0:
-                # Weight tolerance check
-                price_approx = 1.0  # We use share diff as the primary check
-                _ = price_approx  # suppress unused warning
-                target_w = target / max(nav, 1)
-                actual_w = actual / max(nav, 1)
-                w_diff = abs(actual_w - target_w)
-                weight_diffs[ticker] = actual_w - target_w
-                if w_diff > self.params.weight_tolerance:
-                    failed = True
-                    notes.append(
-                        f"{ticker}: weight_diff={actual_w - target_w:.4f} "
-                        f"(tolerance={self.params.weight_tolerance})"
-                    )
 
         cash_diff = abs(actual_cash - target_cash)
         if cash_diff > self.params.cash_tolerance:

@@ -42,7 +42,6 @@ class TestReconciliationTolerance:
             actual_shares={"QQQ": 10.0, "SGOV": 5.0},
             target_cash=500.0,
             actual_cash=500.0,
-            nav=10_000.0,
             recon_date=date(2024, 2, 1),
         )
         assert result.passed is True
@@ -54,7 +53,6 @@ class TestReconciliationTolerance:
             actual_shares={"QQQ": 10.00005},  # diff = 0.00005 < 0.0001
             target_cash=0.0,
             actual_cash=0.0,
-            nav=10_000.0,
             recon_date=date(2024, 2, 1),
         )
         assert result.passed is True
@@ -66,7 +64,6 @@ class TestReconciliationTolerance:
             actual_shares={"QQQ": 10.5},  # diff = 0.5 >> 0.0001
             target_cash=0.0,
             actual_cash=0.0,
-            nav=10_000.0,
             recon_date=date(2024, 2, 1),
         )
         assert result.passed is False
@@ -82,7 +79,6 @@ class TestReconciliationTolerance:
             actual_shares={},
             target_cash=1000.0,
             actual_cash=1000.50,  # diff = 0.50 < 1.00
-            nav=1000.0,
             recon_date=date(2024, 2, 1),
         )
         assert result.passed is True
@@ -94,7 +90,6 @@ class TestReconciliationTolerance:
             actual_shares={},
             target_cash=1000.0,
             actual_cash=1002.5,  # diff = 2.5 > 1.00
-            nav=1000.0,
             recon_date=date(2024, 2, 1),
         )
         assert result.passed is False
@@ -106,7 +101,6 @@ class TestReconciliationTolerance:
             actual_shares={"IWM": 15.0},  # large discrepancy
             target_cash=0.0,
             actual_cash=0.0,
-            nav=5000.0,
             recon_date=date(2024, 2, 1),
         )
         assert len(result.events) > 0
